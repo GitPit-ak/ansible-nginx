@@ -1,4 +1,4 @@
-#DevOps Project with nginx
+# DevOps Project with nginx
 
 Welcome to an another project So in this project we will launch two web server with one nginx server
 
