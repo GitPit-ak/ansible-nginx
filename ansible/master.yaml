@@ -1,0 +1,95 @@
+---
+- name: Deploying 2 web server's load balancing
+  hosts: all
+  become: yes
+  tasks:
+    - name: update and install packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - httpd
+        - unzip
+        - vim
+        - net-tools
+      when: ansible_nodename == "web02"
+
+    - name: Start & enable httpd on centos
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: ansible_nodename == "web02"
+
+    - name: Deploying website
+      ansible.builtin.unarchive:
+        src: https://www.tooplate.com/zip-templates/2096_individual.zip
+        dest: /tmp/
+        remote_src: yes
+      when: ansible_nodename == "web02"
+
+    - name: Copy file into web server
+      command: sudo cp -r /tmp/2096_individual/* /var/www/html/
+      when: ansible_nodename == "web02"
+
+###Ubuntu deployment
+    - name: update and install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - apache2
+        - unzip
+        - vim
+        - net-tools
+      when: ansible_nodename == "web01"
+
+    - name: Deploying website
+      ansible.builtin.unarchive:
+        src: https://templatemo.com/tm-zip-files-2020/templatemo_516_known.zip
+        dest: /tmp/
+        remote_src: yes
+      when: ansible_nodename == "web01"
+
+    - name: Copy file with owner and permissions
+      copy:
+        src: /tmp/templatemo_516_known/
+        dest: /var/www/html/
+        owner: root
+        group: root
+        mode: '0644'
+      when: ansible_nodename == "web01"
+
+#nginx 
+    - name: update and install nginx
+      apt:
+        name: nginx
+        state: present
+        update-cache: true
+      when: ansible_nodename == "nginx"
+
+    - name:  remove nginx default sites
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      when: ansible_nodename == "nginx"
+
+    - name: adding nginx config
+      copy:
+        src: load.conf
+        dest: /etc/nginx/conf.d/load.conf
+        owner: root
+        group: root
+        mode: '0644'
+        backup: yes  
+      when: ansible_nodename == "nginx"
+
+    - name: Restarting nginx with load balancing config
+      service:
+        name: nginx
+        state: reloaded
+      when: ansible_nodename == "nginx"
+
+

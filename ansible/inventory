@@ -1,0 +1,9 @@
+web01 ansible_host=192.168.1.56 ansible_user=vagrant
+web02 ansible_host=192.168.1.57 ansible_user=vagrant
+nginx ansible_host=localhost ansible_connection=local
+
+[ubuntu]
+web01
+
+[centos]
+web02

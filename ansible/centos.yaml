@@ -1,0 +1,36 @@
+---
+- name: Installed web server
+  hosts: web02
+  become: yes
+
+  tasks:
+    - name: update and install packages
+  
+      yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - httpd
+        - unzip
+        - vim
+        - net-tools
+      # when: ansible_distribution == "Ubuntu"
+
+    - name: Start & enable httpd on centos
+  
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Deploying website
+  
+      ansible.builtin.unarchive:
+        src: https://templatemo.com/tm-zip-files-2020/templatemo_520_highway.zip
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Copy file into web server
+  
+      command: sudo cp -r /tmp/templatemo_520_highway/* /var/www/html/

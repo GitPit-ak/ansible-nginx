@@ -1,0 +1,37 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "web01" do |web01|
+    web01.vm.box = "generic/ubuntu2204"
+    web01.vm.hostname = "web01"
+    web01.vm.network "public_network", ip: "192.168.1.56"
+    web01.vm.provision  "shell", path: "./scripts/motd.sh"
+    web01.vm.provision  "shell", path: "./scripts/ubuntu.sh"
+    web01.vm.provider "virtualbox" do |vb|
+      vb.name = "web01"
+      end
+  end
+
+  config.vm.define "web02" do |web02|
+    web02.vm.box = "geerlingguy/centos7"
+    web02.vm.hostname = "web02"
+    web02.vm.network "public_network", ip: "192.168.1.57"
+    web02.vm.provision  "shell", path: "./scripts/centos.sh"
+    web02.vm.provision  "shell", path: "./scripts/motd.sh"
+    web02.vm.provider "virtualbox" do |vb|
+      vb.name = "web02"
+      end
+  end
+
+  config.vm.define "nginx" do |nginx|
+      nginx.vm.box = "generic/ubuntu2204"
+      nginx.vm.network "public_network", ip: "192.168.1.55"
+      nginx.vm.hostname = "nginx"
+      nginx.vm.provision  "shell", path: "./scripts/ansible.sh"
+      nginx.vm.provision  "shell", path: "./scripts/motd.sh"
+      nginx.vm.provider "virtualbox" do |vb|
+        vb.name = "nginx"
+        end 
+  end
+
+
+end

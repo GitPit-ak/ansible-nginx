@@ -1,0 +1,31 @@
+---
+- name: Installed web server
+  hosts: web01
+  become: yes
+
+  tasks:
+    - name: update and install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+      loop:
+        - apache2
+        - unzip
+        - vim
+        - net-tools
+      # when: ansible_distribution == "Ubuntu"
+
+    - name: Deploying website
+      ansible.builtin.unarchive:
+        src: https://www.tooplate.com/zip-templates/2124_vertex.zip
+        dest: /tmp/
+        remote_src: yes
+
+    - name: Copy file with owner and permissions
+      copy:
+        src: /tmp/2124_vertex/
+        dest: /var/www/html/
+        owner: root
+        group: root
+        mode: '0644'
