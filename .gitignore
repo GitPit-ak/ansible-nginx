@@ -1,2 +1,4 @@
 .vagrant
-exercise14
+rough
+.gitignore
+ansible/centos.yaml
