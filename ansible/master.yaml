@@ -3,7 +3,7 @@
   hosts: all
   become: yes
   tasks:
-    - name: update and install packages
+    - name: update and install packages for centos 
       yum:
         name: "{{ item }}"
         state: present
@@ -22,7 +22,7 @@
         enabled: yes
       when: ansible_nodename == "web02"
 
-    - name: Deploying website
+    - name: Deploying website on web02
       ansible.builtin.unarchive:
         src: https://www.tooplate.com/zip-templates/2096_individual.zip
         dest: /tmp/
@@ -30,11 +30,11 @@
       when: ansible_nodename == "web02"
 
     - name: Copy file into web server
-      command: sudo cp -r /tmp/2096_individual/* /var/www/html/
+      shell: sudo cp -r /tmp/2096_individual/* /var/www/html/
       when: ansible_nodename == "web02"
 
 ###Ubuntu deployment
-    - name: update and install packages
+    - name: update and install packages for web01 ubuntu
       apt:
         name: "{{ item }}"
         state: present
@@ -46,21 +46,27 @@
         - net-tools
       when: ansible_nodename == "web01"
 
-    - name: Deploying website
+    - name: Deploying website on web01
       ansible.builtin.unarchive:
         src: https://templatemo.com/tm-zip-files-2020/templatemo_516_known.zip
         dest: /tmp/
         remote_src: yes
       when: ansible_nodename == "web01"
 
-    - name: Copy file with owner and permissions
-      copy:
-        src: /tmp/templatemo_516_known/
-        dest: /var/www/html/
-        owner: root
-        group: root
-        mode: '0644'
+
+    - name: Copy file into web server
+      shell: sudo cp -r /tmp/templatemo_516_known/* /var/www/html/
       when: ansible_nodename == "web01"
+
+
+    # - name: Copy file with owner and permissions
+    #   copy:
+    #     src: /tmp/templatemo_516_known/
+    #     dest: /var/www/html/
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #   when: ansible_nodename == "web01"
 
 #nginx 
     - name: update and install nginx
