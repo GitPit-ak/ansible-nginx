@@ -1,4 +1,5 @@
-# DevOps Project with nginx and vagrant
+# DevOps Project 
+# Automated web server with nginx locally.
 
 Welcome to an another project So in this project we will launch two web server with one nginx server
 
