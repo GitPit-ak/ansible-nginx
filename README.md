@@ -1,6 +1,8 @@
 # DevOps Project 
 # Automated web server with nginx locally.
 
+![digram drawio](https://github.com/GitPit-ak/ansible-nginx/assets/44562876/b7c75c1b-167e-403f-8f49-728484752210)
+
 Welcome to an another project So in this project we will launch two web server with one nginx server
 
 Clone this repo into your master vm goto "../ansible/" directory run the master playbook to setup the complete infra.
